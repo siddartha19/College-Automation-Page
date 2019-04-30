@@ -178,6 +178,43 @@ def home():
 	sdet = session.query(Student).all()
 	return render_template('index.html', sdetails=sdet)
 
+@app.route('/attendancepost/<int:class_id>/<int:sec_id>/')
+def attendancepost(class_id,sec_id):
+    import datetime
+    import re
+    now = datetime.datetime.now()
+    crno = now.year-2000
+    crno = crno - class_id
+    sdet = session.query(Student).all()
+    roll = []
+    for i in sdet:
+        if re.search("^"+str(crno), i.rollno):
+            roll.append(i.rollno)  
+    return render_template('attendancepost.html', sdetails=sdet)
+
+@app.route("/success", methods=['GET', 'POST'])
+def post():
+    if request.method == 'POST':
+        sdet = session.query(Student).all()
+        for i in sdet:
+            try:
+                if request.form[i.rollno] != "":
+                    newpost = Attendance(
+                            rollno=request.form[i.rollno], 
+                            day=request.form['day'], 
+                            subject = request.form['subject'],
+                            period = request.form['period'], user_id='1')
+                    session.add(newpost)
+                    session.commit()
+            except:
+                pass        
+        flash("Attendance Posted Successfully")
+        sdet = session.query(Student).all()
+        return render_template('index.html', sdetails=sdet)
+    else:
+        sdet = session.query(Student).all()
+        return render_template('index.html', sdetails=sdet)  
+
 
 # ********************************User**************************************
 

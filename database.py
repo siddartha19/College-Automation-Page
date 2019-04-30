@@ -43,14 +43,10 @@ class Attendance(Base):
     __tablename__ = 'attendance'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(80), nullable=False)
-    branch = Column(String(80), nullable=False)
     rollno = Column(String(10), nullable=False)
     day = Column(String(50), nullable=False)
     subject = Column(String(50), nullable=False)
     period = Column(Integer, nullable=False)
-    student_id = Column(Integer, ForeignKey('student.id'))
-    student = relationship(Student)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
@@ -58,8 +54,6 @@ class Attendance(Base):
     def serialize(self):
         """Return object data in easily serializeable format"""
         return {
-            'name': self.name,
-            'branch': self.branch,
             'id': self.id,
             'rollno': self.rollno,
             'day': self.day,
